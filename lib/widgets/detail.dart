@@ -8,6 +8,9 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(title: Text("Detail Page"),),
+      body: Text("Detail page"),
+    );
   }
 }
