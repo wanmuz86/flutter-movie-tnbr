@@ -10,18 +10,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  var mockDatas = [
+  List<MovieSearch> mockDatas = [
     ];
 
 
-  Future<MovieSearch> fetchMovies() async {
+  Future <List<MovieSearch>> fetchMovies() async {
     final response =
     await http.get(Uri.parse('https://www.omdbapi.com/?s=lord&apikey=87d10179'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-      return MovieSearch.fromJson(jsonDecode(response.body));
+      return MovieSearch.moviesFromJson(jsonDecode(response.body));
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -43,7 +43,13 @@ class _HomePageState extends State<HomePage> {
                 )
                 ),
                 TextButton(onPressed: (){
-                  
+
+                  fetchMovies().then((value) =>
+                      setState(() {
+                        mockDatas = value;
+                      })
+                  );
+
                 }, child: Text("Search"))
               ],
             ),
@@ -52,10 +58,10 @@ class _HomePageState extends State<HomePage> {
                   itemCount: mockDatas.length,
                   itemBuilder: (context, index){
                     return ListTile(
-                        title: Text(mockDatas[index]["Title"]!),
-                        subtitle: Text(mockDatas[index]["Year"]!),
+                        title: Text(mockDatas[index].title),
+                        subtitle: Text(mockDatas[index].year),
                         trailing: Icon(Icons.arrow_forward_ios),
-                        leading: Image.network(mockDatas[index]["Poster"]!),
+                        leading: Image.network(mockDatas[index].poster),
                         onTap:(){
                           Navigator.push(
                               context,

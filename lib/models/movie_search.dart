@@ -19,9 +19,9 @@ class MovieSearch {
         poster: json["Poster"]);
   }
   // Transform json to Array
-  List<MovieSearch> moviesFromJson(dynamic json ){
+  static List<MovieSearch> moviesFromJson(dynamic json ){
     var searchResult = json["Search"];
-    List<MovieSearch> results = new List.empty();
+    List<MovieSearch> results = new List.empty(growable: true);
     if (searchResult != null){
       searchResult.forEach((v)=>{
         results.add(MovieSearch.fromJson(v))
