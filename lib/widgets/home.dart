@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/widgets/detail.dart';
-
+import 'package:movie_app/models/movie_search.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -9,34 +11,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   var mockDatas = [
-    {
-      "Title": "The Lord of the Rings: The Fellowship of the Ring",
-      "Year": "2001",
-      "imdbID": "tt0120737",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BN2EyZjM3NzUtNWUzMi00MTgxLWI0NTctMzY4M2VlOTdjZWRiXkEyXkFqcGdeQXVyNDUzOTQ5MjY@._V1_SX300.jpg"
-    },
-    {
-      "Title": "The Lord of the Rings: The Return of the King",
-      "Year": "2003",
-      "imdbID": "tt0167260",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BNzA5ZDNlZWMtM2NhNS00NDJjLTk4NDItYTRmY2EwMWZlMTY3XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg"
-    },
-    {
-      "Title": "The Lord of the Rings: The Two Towers",
-      "Year": "2002",
-      "imdbID": "tt0167261",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BZGMxZTdjZmYtMmE2Ni00ZTdkLWI5NTgtNjlmMjBiNzU2MmI5XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Lord of War",
-      "Year": "2005",
-      "imdbID": "tt0399295",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMTYzZWE3MDAtZjZkMi00MzhlLTlhZDUtNmI2Zjg3OWVlZWI0XkEyXkFqcGdeQXVyNDk3NzU2MTQ@._V1_SX300.jpg"
-    }];
+    ];
+
+
+  Future<MovieSearch> fetchMovies() async {
+    final response =
+    await http.get(Uri.parse('https://www.omdbapi.com/?s=lord&apikey=87d10179'));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return MovieSearch.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load movies');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +42,9 @@ class _HomePageState extends State<HomePage> {
                   decoration: InputDecoration(hintText: "Enter movie to search"),
                 )
                 ),
-                TextButton(onPressed: (){}, child: Text("Search"))
+                TextButton(onPressed: (){
+                  
+                }, child: Text("Search"))
               ],
             ),
             Expanded(
@@ -74,5 +68,7 @@ class _HomePageState extends State<HomePage> {
           ]
       ),
     );
+
   }
+
 }
