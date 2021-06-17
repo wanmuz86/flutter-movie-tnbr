@@ -12,11 +12,12 @@ class _HomePageState extends State<HomePage> {
 
   List<MovieSearch> mockDatas = [
     ];
+  var searchEditingController = TextEditingController();
 
 
-  Future <List<MovieSearch>> fetchMovies() async {
+  Future <List<MovieSearch>> fetchMovies(String searchText) async {
     final response =
-    await http.get(Uri.parse('https://www.omdbapi.com/?s=lord&apikey=87d10179'));
+    await http.get(Uri.parse('https://www.omdbapi.com/?s=$searchText&apikey=87d10179'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -39,12 +40,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(child:
                 TextField(
+                  controller: searchEditingController,
                   decoration: InputDecoration(hintText: "Enter movie to search"),
                 )
                 ),
                 TextButton(onPressed: (){
-
-                  fetchMovies().then((value) =>
+                  fetchMovies(searchEditingController.text).then((value) =>
                       setState(() {
                         mockDatas = value;
                       })
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                         onTap:(){
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context)=>DetailPage())
+                              MaterialPageRoute(builder: (context)=>DetailPage(imdbID: mockDatas[index].imdbId,))
                           );
                         }
                     );
